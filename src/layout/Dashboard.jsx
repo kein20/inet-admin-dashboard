@@ -39,7 +39,7 @@ const DashboardLayout = () => {
                                 <Router sx={{ color: 'white', fontSize: 20 }} />
                             </Box>
                             <Typography variant="h6" sx={{ color: 'text.primary', fontWeight: 800, letterSpacing: '-0.5px' }}>
-                                Telco<span style={{ color: '#8b5cf6' }}>Admin</span>
+                                Inet<span style={{ color: '#8b5cf6' }}>Admin</span>
                             </Typography>
                         </Box>
 
