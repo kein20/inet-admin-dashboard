@@ -97,28 +97,38 @@ inet-app/
 
 ## 📸 Galeri Aplikasi
 
-Berikut adalah dokumentasi visual dari antarmuka aplikasi:
-
-*Pastikan Anda menyimpan gambar screenshot di folder `screenshots/` agar tampil.*
+Berikut adalah dokumentasi visual lengkap dari antarmuka aplikasi:
 
 <details>
-<summary><b>🔻 Klik untuk melihat Screenshot</b></summary>
+<summary><b>🔻 Klik untuk melihat Semua Screenshot</b></summary>
 <br>
 
 **1. Halaman Login**
-![Halaman Login](./screenshots/login.png)
+![Halaman Login](./screenshots/Halaman%20Login.png)
 
-**2. Dashboard Pelanggan**
-![Dashboard Pelanggan](./screenshots/customer-list.png)
+**2. Dashboard Pelanggan (List Customer)**
+![Halaman Customers](./screenshots/Halaman%20Customers.png)
 
-**3. Form Input Pelanggan**
-![Form Input Pelanggan](./screenshots/customer-form.png)
+**3. Tambah Customer Baru**
+![Tambah Customer](./screenshots/Tambah%20Customer.png)
 
-**4. Modal Pembelian Paket**
-![Modal Pembelian Paket](./screenshots/buy-package.png)
+**4. Edit Data Customer**
+![Edit Customer](./screenshots/Edit%20Customer.png)
 
-**5. Riwayat Transaksi**
-![Riwayat Transaksi](./screenshots/transaction-history.png)
+**5. Hapus Customer (Konfirmasi)**
+![Hapus Customer](./screenshots/Hapus%20Customer.png)
+
+**6. Modal Pembelian Paket**
+![Beli Paket](./screenshots/Beli%20Paket.png)
+
+**7. Konfirmasi Pembayaran**
+![Konfirmasi Pembayaran](./screenshots/Konfirmasi%20Pembayaran.png)
+
+**8. Riwayat Transaksi**
+![Halaman Histori Transaksi](./screenshots/Halaman%20Histori%20Transaksi.png)
+
+**9. Konfirmasi Logout**
+![Konfirmasi Logout](./screenshots/Konfirmasi%20Logout.png)
 
 </details>
 
