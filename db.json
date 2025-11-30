@@ -1,0 +1,84 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "Admin",
+      "password": "123",
+      "role": "admin"
+    }
+  ],
+  "customers": [
+    {
+      "id": "1",
+      "name": "Hinata Shoyo",
+      "phone": "08123456789",
+      "email": "Hinata@gmail.com"
+    },
+    {
+      "id": "99bbba3e-465c-4e7a-9e5d-2878b12e580b",
+      "name": "Kageyama Tobio",
+      "phone": "08198765432",
+      "email": "Kageyama@gmail.com"
+    }
+  ],
+  "packages": [
+    {
+      "id": "1",
+      "name": "Freedom 10GB",
+      "quota": "10 GB",
+      "price": 50000,
+      "description": "Masa aktif 30 hari"
+    },
+    {
+      "id": "2",
+      "name": "Unlimited Youtube",
+      "quota": "Unlimited",
+      "price": 75000,
+      "description": "FUP 20GB"
+    },
+    {
+      "id": "3",
+      "name": "OMG! Chat",
+      "quota": "5 GB",
+      "price": 25000,
+      "description": "Khusus Chat & Sosmed"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "3f16",
+      "customerId": "1",
+      "packageId": "2",
+      "date": "2025-11-29T14:57:47.648Z",
+      "total": 75000
+    },
+    {
+      "id": "a0a9",
+      "customerId": null,
+      "packageId": "3",
+      "date": "2025-11-29T15:05:21.608Z",
+      "total": 25000
+    },
+    {
+      "id": "c6274c8e-c022-4688-8b64-c49bc7d705a4",
+      "customerId": "1",
+      "packageId": "2",
+      "date": "2025-11-30T02:40:21.111Z",
+      "total": 75000
+    },
+    {
+      "id": "b35ef1ca-38c9-4dba-a34c-9d2935f2ed8b",
+      "customerId": null,
+      "packageId": "2",
+      "date": "2025-11-30T02:55:53.506Z",
+      "total": 75000
+    },
+    {
+      "id": "e461c29d-5556-4846-bc83-169c6b3e20e9",
+      "customerId": "1",
+      "packageId": "2",
+      "date": "2025-11-30T06:28:22.842Z",
+      "total": 75000
+    }
+  ]
+}
