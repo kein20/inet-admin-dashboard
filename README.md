@@ -99,22 +99,28 @@ inet-app/
 
 Berikut adalah dokumentasi visual dari antarmuka aplikasi:
 
-\<details\>
-\<summary\>\<b\>🔻 Klik untuk melihat Screenshot\</b\>\</summary\>
+*Pastikan Anda menyimpan gambar screenshot di folder `screenshots/` agar tampil.*
 
+<details>
+<summary><b>🔻 Klik untuk melihat Screenshot</b></summary>
 <br>
 
 **1. Halaman Login**
+![Halaman Login](./screenshots/login.png)
 
 **2. Dashboard Pelanggan**
+![Dashboard Pelanggan](./screenshots/customer-list.png)
 
 **3. Form Input Pelanggan**
+![Form Input Pelanggan](./screenshots/customer-form.png)
 
 **4. Modal Pembelian Paket**
+![Modal Pembelian Paket](./screenshots/buy-package.png)
 
 **5. Riwayat Transaksi**
+![Riwayat Transaksi](./screenshots/transaction-history.png)
 
-\</details\>
+</details>
 
 -----
 
@@ -135,7 +141,3 @@ Project ini dikembangkan menggunakan teknologi modern standar industri:
   * **Mulai Pengerjaan**: 29 November 2025, pukul 11.00 WIB
   * **Selesai Pengerjaan**: 30 November 2025, pukul 13.00 WIB
   * **Total Durasi**: ± 12 Jam
-
-
-```
-```
