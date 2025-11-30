@@ -1,4 +1,4 @@
-# TelcoAdmin DWP Dashboard
+# InetAdmin DWP Dashboard
 
 Platform dashboard modern untuk mempermudah manajemen pelanggan (*Customer Relationship Management*) dan transaksi paket data internet. Dibangun menggunakan React (Vite).
 
@@ -69,12 +69,11 @@ Aplikasi ini dibagi menjadi tiga modul utama:
 
 -----
 
------
-📂 Struktur Proyek
+## 📂 Struktur Proyek
+
 Berikut adalah peta struktur folder untuk memudahkan navigasi kode:
 
-Plaintext
-
+```text
 inet-app/
 ├── public/                  # Aset statis (Favicon, Logo)
 ├── screenshots/             # Dokumentasi gambar aplikasi
@@ -92,14 +91,13 @@ inet-app/
 ├── index.html               # File HTML Utama
 ├── package.json             # Daftar Dependensi & Script
 └── vite.config.js           # Konfigurasi Build Tool Vite
+```
 
 -----
 
 ## 📸 Galeri Aplikasi
 
 Berikut adalah dokumentasi visual dari antarmuka aplikasi:
-
-*Pastikan Anda menyimpan gambar screenshot di folder `screenshots/` agar tampil.*
 
 \<details\>
 \<summary\>\<b\>🔻 Klik untuk melihat Screenshot\</b\>\</summary\>
@@ -138,5 +136,6 @@ Project ini dikembangkan menggunakan teknologi modern standar industri:
   * **Selesai Pengerjaan**: 30 November 2025, pukul 13.00 WIB
   * **Total Durasi**: ± 12 Jam
 
------
 
+```
+```
