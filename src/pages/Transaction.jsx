@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import {
     Box, Typography, Table, TableBody, TableCell, TableContainer,
-    TableHead, TableRow, Paper, Chip, IconButton, Snackbar, Alert, Tooltip, 
-    TextField, MenuItem, Select, FormControl, InputLabel, Button
+    TableHead, TableRow, Paper, Chip, IconButton, Snackbar, Alert, Tooltip,
+    TextField, MenuItem, Select, FormControl, InputLabel, Button, InputAdornment 
 } from '@mui/material';
-import { History, Delete, FilterList } from '@mui/icons-material';
+import { History, Delete, Search } from '@mui/icons-material'; 
 import api from '../api/Instance';
 import ConfirmDialog from '../components/Confirm';
 
 const TransactionPage = () => {
     const [trxs, setTrxs] = useState([]);
+    const [allPackages, setAllPackages] = useState([]);
     const [search, setSearch] = useState('');
-    
     const [filterDate, setFilterDate] = useState('');
+    const [filterPackage, setFilterPackage] = useState('all');
     const [sortOrder, setSortOrder] = useState('newest');
-
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
@@ -34,6 +34,8 @@ const TransactionPage = () => {
             const transactions = trxRes.data;
             const customers = custRes.data;
             const packages = pkgRes.data;
+
+            setAllPackages(packages);
 
             const mergedData = transactions.map(trx => {
                 const customer = customers.find(c => c.id === trx.customerId);
@@ -80,25 +82,33 @@ const TransactionPage = () => {
 
     const processedTrxs = trxs
         .filter((t) => {
-            const matchSearch = t.customerName.toLowerCase().includes(search.toLowerCase()) || 
-                                t.packageName.toLowerCase().includes(search.toLowerCase());
-            
+            const matchSearch = t.customerName.toLowerCase().includes(search.toLowerCase());
             const matchDate = filterDate ? t.date.startsWith(filterDate) : true;
+            const matchPackage = filterPackage === 'all' ? true : t.packageName === filterPackage;
 
-            return matchSearch && matchDate;
+            return matchSearch && matchDate && matchPackage;
         })
         .sort((a, b) => {
             const dateA = new Date(a.date);
             const dateB = new Date(b.date);
 
             switch (sortOrder) {
-                case 'newest': return dateB - dateA; 
-                case 'oldest': return dateA - dateB; 
-                case 'highPrice': return b.total - a.total; 
-                case 'lowPrice': return a.total - b.total;  
+                case 'newest': return dateB - dateA;
+                case 'oldest': return dateA - dateB;
+                case 'nameAsc': return a.customerName.localeCompare(b.customerName);
+                case 'nameDesc': return b.customerName.localeCompare(a.customerName);
+                case 'highPrice': return b.total - a.total;
+                case 'lowPrice': return a.total - b.total;
                 default: return 0;
             }
         });
+
+    const handleReset = () => {
+        setSearch('');
+        setFilterDate('');
+        setFilterPackage('all');
+        setSortOrder('newest');
+    };
 
     return (
         <Box>
@@ -108,26 +118,50 @@ const TransactionPage = () => {
             </Box>
 
             <Paper sx={{ p: 2, mb: 3, display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-                <TextField 
-                    label="Search Name/Package" 
-                    variant="outlined" 
-                    size="small" 
+                <TextField
+                    label="Search Customer Name"
+                    variant="outlined"
+                    size="small"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    sx={{ flexGrow: 1 }}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <Search fontSize="small" sx={{ color: 'text.secondary' }} />
+                            </InputAdornment>
+                        ),
+                    }}
+                    sx={{ flexGrow: 1, minWidth: '200px' }}
                 />
 
-                <TextField 
-                    label="Filter Date"
+                <TextField
+                    label="Date"
                     type="date"
                     size="small"
                     value={filterDate}
                     onChange={(e) => setFilterDate(e.target.value)}
                     InputLabelProps={{ shrink: true }}
-                    sx={{ width: 150 }}
+                    sx={{ width: 140 }}
                 />
 
-                <FormControl size="small" sx={{ width: 150 }}>
+                {/* DROPDOWN PACKAGE */}
+                <FormControl size="small" sx={{ width: 160 }}>
+                    <InputLabel>Package Type</InputLabel>
+                    <Select
+                        value={filterPackage}
+                        label="Package Type"
+                        onChange={(e) => setFilterPackage(e.target.value)}
+                    >
+                        <MenuItem value="all">All Packages</MenuItem>
+                        {allPackages.map((pkg) => (
+                            <MenuItem key={pkg.id} value={pkg.name}>
+                                {pkg.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <FormControl size="small" sx={{ width: 160 }}>
                     <InputLabel>Sort By</InputLabel>
                     <Select
                         value={sortOrder}
@@ -136,17 +170,15 @@ const TransactionPage = () => {
                     >
                         <MenuItem value="newest">Newest Date</MenuItem>
                         <MenuItem value="oldest">Oldest Date</MenuItem>
+                        <MenuItem value="nameAsc">Customer (A-Z)</MenuItem>
+                        <MenuItem value="nameDesc">Customer (Z-A)</MenuItem>
                         <MenuItem value="highPrice">Highest Price</MenuItem>
                         <MenuItem value="lowPrice">Lowest Price</MenuItem>
                     </Select>
                 </FormControl>
-                
-                {(search || filterDate) && (
-                    <Button 
-                        size="small" 
-                        color="error" 
-                        onClick={() => { setSearch(''); setFilterDate(''); setSortOrder('newest'); }}
-                    >
+
+                {(search || filterDate || filterPackage !== 'all' || sortOrder !== 'newest') && (
+                    <Button size="small" color="error" onClick={handleReset}>
                         Reset
                     </Button>
                 )}

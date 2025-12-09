@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Paper, Alert, InputAdornment } from '@mui/material';
+import { Box, Typography, TextField, Button, Paper, Alert, InputAdornment, Tooltip } from '@mui/material'; 
 import { Login as LoginIcon, Person, Lock } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/Instance';
@@ -16,7 +16,7 @@ const LoginPage = () => {
         e.preventDefault();
 
         if (!username || !password) {
-            setError('Mohon isi username dan password terlebih dahulu.');
+            setError('Please fill the username and password.');
             return;
         }
 
@@ -26,10 +26,10 @@ const LoginPage = () => {
                 login(res.data[0]);
                 navigate('/');
             } else {
-                setError('Username atau password salah.');
+                setError('Username or password invalid.');
             }
         } catch (err) {
-            setError('Gagal terhubung ke server. Pastikan JSON Server berjalan.');
+            setError('Cannot connect to the server. Make sure JSON server is running.');
         }
     };
 
@@ -77,7 +77,7 @@ const LoginPage = () => {
                     Hello!
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-                    Selamat datang kembali, Admin.
+                    Welcome Back, Admin.
                 </Typography>
 
                 {error && <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>{error}</Alert>}
@@ -91,7 +91,7 @@ const LoginPage = () => {
                         value={username}
                         onChange={(e) => {
                             setUsername(e.target.value);
-                            setError(''); 
+                            setError('');
                         }}
                         sx={{ '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc' } }}
                         InputProps={{
@@ -111,7 +111,7 @@ const LoginPage = () => {
                         value={password}
                         onChange={(e) => {
                             setPassword(e.target.value);
-                            setError(''); 
+                            setError('');
                         }}
                         sx={{ mb: 4, '& .MuiOutlinedInput-root': { bgcolor: '#f8fafc' } }}
                         InputProps={{
@@ -122,24 +122,35 @@ const LoginPage = () => {
                             )
                         }}
                     />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        size="large"
-                        disabled={isButtonDisabled} 
-                        sx={{
-                            py: 1.8,
-                            fontSize: '1rem',
-                            borderRadius: 3,
-                            '&.Mui-disabled': {
-                                bgcolor: '#e2e8f0',
-                                color: '#94a3b8'
-                            }
-                        }}
+
+                    <Tooltip
+                        title={isButtonDisabled ? "Please fill the username and password" : ""}
+                        arrow
+                        placement="top"
                     >
-                        Sign In
-                    </Button>
+                        <Box sx={{ width: '100%' }}>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                size="large"
+                                disabled={isButtonDisabled}
+                                sx={{
+                                    py: 1.8,
+                                    fontSize: '1rem',
+                                    borderRadius: 3,
+                                    '&.Mui-disabled': {
+                                        bgcolor: '#e2e8f0',
+                                        color: '#94a3b8',
+                                        pointerEvents: 'none' 
+                                    }
+                                }}
+                            >
+                                Sign In
+                            </Button>
+                        </Box>
+                    </Tooltip>
+
                 </form>
             </Paper>
         </Box>

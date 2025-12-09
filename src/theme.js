@@ -22,12 +22,12 @@ const theme = createTheme({
         },
     },
     typography: {
-        fontFamily: '"Plus Jakarta Sans", "Inter", sans-serif',
+        fontFamily: '"Lexend", "Plus Jakarta Sans", "Inter", sans-serif',
         h5: { fontWeight: 700 },
         h6: { fontWeight: 600 },
         button: {
             textTransform: 'none',
-            fontWeight: 600,
+            fontWeight: 500, 
             borderRadius: '10px',
         },
     },
@@ -60,7 +60,7 @@ const theme = createTheme({
         MuiTableCell: {
             styleOverrides: {
                 head: {
-                    fontWeight: 700,
+                    fontWeight: 600, 
                     backgroundColor: '#f3f0ff',
                     color: '#7c3aed',
                     borderBottom: 'none',
