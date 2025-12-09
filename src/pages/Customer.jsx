@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent,
-    DialogActions, TextField, Snackbar, Alert, Chip
+    DialogActions, TextField, Snackbar, Alert, Chip, InputAdornment,
+    MenuItem, Select, FormControl, InputLabel
 } from '@mui/material';
-import { Add, Edit, Delete, ShoppingCart } from '@mui/icons-material';
+import { Add, Edit, Delete, ShoppingCart, Search } from '@mui/icons-material';
 import { useCustomers } from '../hooks/useCustomers';
 import TransactionModal from '../components/TransactionModal';
 import ConfirmDialog from '../components/Confirm';
+import api from '../api/Instance';
 
 const CustomerPage = () => {
     const {
@@ -20,6 +22,16 @@ const CustomerPage = () => {
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
+    const [search, setSearch] = useState('');
+    const [transactions, setTransactions] = useState([]);
+    const [sortOrder, setSortOrder] = useState('asc'); 
+    const [statusFilter, setStatusFilter] = useState('all'); 
+
+    useEffect(() => {
+        api.get('/transactions')
+            .then(res => setTransactions(res.data))
+            .catch(err => console.error("Gagal ambil transaksi", err));
+    }, [customers, trxModalOpen]);
 
     const onBuyClick = (cust) => {
         setSelectedCustomer(cust);
@@ -31,37 +43,109 @@ const CustomerPage = () => {
         setDeleteOpen(true);
     };
 
+    const getStatus = (customerId) => {
+        const hasTransaction = transactions.some(t => t.customerId === customerId);
+        return hasTransaction ? 'Active' : 'Inactive';
+    };
+
+    const processedCustomers = customers
+        .filter(c => {
+            const matchSearch = c.name.toLowerCase().includes(search.toLowerCase()) ||
+                c.email.toLowerCase().includes(search.toLowerCase()) ||
+                c.phone.includes(search);
+
+            const status = getStatus(c.id); 
+            const matchStatus = statusFilter === 'all'
+                ? true
+                : status.toLowerCase() === statusFilter;
+
+            return matchSearch && matchStatus;
+        })
+        .sort((a, b) => {
+            if (sortOrder === 'asc') {
+                return a.name.localeCompare(b.name); 
+            } else {
+                return b.name.localeCompare(a.name); 
+            }
+        });
+
     return (
         <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, alignItems: 'center' }}>
                 <Typography variant="h5" color="text.primary">Customer Management</Typography>
                 <Button variant="contained" startIcon={<Add />} onClick={handleOpenAdd}>
-                    New customer
+                    New Customer
                 </Button>
             </Box>
+
+            <Paper sx={{ p: 2, mb: 3, display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+                <TextField
+                    size="small"
+                    placeholder="Search by Name, Email, Phone..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <Search fontSize="small" />
+                            </InputAdornment>
+                        ),
+                    }}
+                    sx={{ flexGrow: 1 }}
+                />
+
+                <FormControl size="small" sx={{ minWidth: 120 }}>
+                    <InputLabel>Status</InputLabel>
+                    <Select
+                        value={statusFilter}
+                        label="Status"
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                    >
+                        <MenuItem value="all">All Status</MenuItem>
+                        <MenuItem value="active">Active</MenuItem>
+                        <MenuItem value="inactive">Inactive</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl size="small" sx={{ minWidth: 120 }}>
+                    <InputLabel>Sort Name</InputLabel>
+                    <Select
+                        value={sortOrder}
+                        label="Sort Name"
+                        onChange={(e) => setSortOrder(e.target.value)}
+                    >
+                        <MenuItem value="asc">A - Z</MenuItem>
+                        <MenuItem value="desc">Z - A</MenuItem>
+                    </Select>
+                </FormControl>
+            </Paper>
 
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>NAME</TableCell>
-                            <TableCell>CONTACT INFO</TableCell>
+                            <TableCell>EMAIL</TableCell>
+                            <TableCell>PHONE</TableCell>
                             <TableCell>STATUS</TableCell>
                             <TableCell align="right">ACTIONS</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {customers.map((row) => (
+                        {processedCustomers.map((row) => (
                             <TableRow key={row.id}>
                                 <TableCell>
                                     <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{row.name}</Typography>
                                 </TableCell>
+                                <TableCell>{row.email}</TableCell>
+                                <TableCell>{row.phone}</TableCell>
                                 <TableCell>
-                                    <Typography variant="body2" color="text.secondary">{row.email}</Typography>
-                                    <Typography variant="caption" color="text.secondary">{row.phone}</Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Chip label="Active" size="small" color="success" variant="outlined" />
+                                    <Chip
+                                        label={getStatus(row.id)}
+                                        size="small"
+                                        color={getStatus(row.id) === 'Active' ? "success" : "default"}
+                                        variant={getStatus(row.id) === 'Active' ? "filled" : "outlined"}
+                                    />
                                 </TableCell>
                                 <TableCell align="right">
                                     <Button size="small" startIcon={<ShoppingCart />} onClick={() => onBuyClick(row)} sx={{ mr: 1 }}>
@@ -76,6 +160,13 @@ const CustomerPage = () => {
                                 </TableCell>
                             </TableRow>
                         ))}
+                        {processedCustomers.length === 0 && (
+                            <TableRow>
+                                <TableCell colSpan={5} align="center" sx={{ py: 3, color: 'text.secondary' }}>
+                                    No customer found.
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>

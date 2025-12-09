@@ -15,10 +15,16 @@
       "email": "Hinata@gmail.com"
     },
     {
-      "id": "99bbba3e-465c-4e7a-9e5d-2878b12e580b",
+      "id": "2",
       "name": "Kageyama Tobio",
       "phone": "08198765432",
       "email": "Kageyama@gmail.com"
+    },
+    {
+      "id": "5e733e7f-6c52-4670-b748-eda606de8650",
+      "name": "Lintang",
+      "phone": "081234567890",
+      "email": "lintang@gmail.com"
     }
   ],
   "packages": [
@@ -46,39 +52,11 @@
   ],
   "transactions": [
     {
-      "id": "3f16",
-      "customerId": "1",
-      "packageId": "2",
-      "date": "2025-11-29T14:57:47.648Z",
-      "total": 75000
-    },
-    {
-      "id": "a0a9",
-      "customerId": null,
+      "id": "a5e8c006-0fa1-4f65-a013-72b201966645",
+      "customerId": "5e733e7f-6c52-4670-b748-eda606de8650",
       "packageId": "3",
-      "date": "2025-11-29T15:05:21.608Z",
+      "date": "2025-12-09T08:13:49.754Z",
       "total": 25000
-    },
-    {
-      "id": "c6274c8e-c022-4688-8b64-c49bc7d705a4",
-      "customerId": "1",
-      "packageId": "2",
-      "date": "2025-11-30T02:40:21.111Z",
-      "total": 75000
-    },
-    {
-      "id": "b35ef1ca-38c9-4dba-a34c-9d2935f2ed8b",
-      "customerId": null,
-      "packageId": "2",
-      "date": "2025-11-30T02:55:53.506Z",
-      "total": 75000
-    },
-    {
-      "id": "e461c29d-5556-4846-bc83-169c6b3e20e9",
-      "customerId": "1",
-      "packageId": "2",
-      "date": "2025-11-30T06:28:22.842Z",
-      "total": 75000
     }
   ]
 }
