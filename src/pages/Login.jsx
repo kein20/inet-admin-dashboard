@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Paper, Alert, InputAdornment, Tooltip } from '@mui/material'; 
+import {
+    Box, Typography, TextField, Button, Paper, Alert, InputAdornment, Tooltip, CircularProgress
+} from '@mui/material'; 
 import { Login as LoginIcon, Person, Lock } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/Instance';
@@ -9,27 +11,34 @@ const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
-
     const handleLogin = async (e) => {
         e.preventDefault();
 
         if (!username || !password) {
-            setError('Please fill the username and password.');
+            setError('Mohon isi username dan password terlebih dahulu.');
             return;
         }
 
+        setIsLoading(true);
+        setError(''); 
+
         try {
             const res = await api.get(`/users?username=${username}&password=${password}`);
+
             if (res.data.length > 0) {
                 login(res.data[0]);
                 navigate('/');
             } else {
-                setError('Username or password invalid.');
+                setError('Username atau password salah.');
             }
         } catch (err) {
-            setError('Cannot connect to the server. Make sure JSON server is running.');
+            console.error(err);
+            setError('Gagal terhubung ke server. Backend mungkin sedang "tidur", coba lagi dalam beberapa detik.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -77,7 +86,7 @@ const LoginPage = () => {
                     Hello!
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-                    Welcome Back, Admin.
+                    Welcome back, Admin.
                 </Typography>
 
                 {error && <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>{error}</Alert>}
@@ -89,6 +98,7 @@ const LoginPage = () => {
                         variant="outlined"
                         margin="normal"
                         value={username}
+                        disabled={isLoading} 
                         onChange={(e) => {
                             setUsername(e.target.value);
                             setError('');
@@ -109,6 +119,7 @@ const LoginPage = () => {
                         variant="outlined"
                         margin="normal"
                         value={password}
+                        disabled={isLoading} 
                         onChange={(e) => {
                             setPassword(e.target.value);
                             setError('');
@@ -124,29 +135,35 @@ const LoginPage = () => {
                     />
 
                     <Tooltip
-                        title={isButtonDisabled ? "Please fill the username and password" : ""}
+                        title={isButtonDisabled && !isLoading ? "Masukkan username dan password terlebih dahulu" : ""}
                         arrow
                         placement="top"
                     >
-                        <Box sx={{ width: '100%' }}>
+                        <Box sx={{ width: '100%', position: 'relative' }}>
                             <Button
                                 type="submit"
                                 fullWidth
                                 variant="contained"
                                 size="large"
-                                disabled={isButtonDisabled}
+                                disabled={isButtonDisabled || isLoading}
                                 sx={{
                                     py: 1.8,
                                     fontSize: '1rem',
                                     borderRadius: 3,
                                     '&.Mui-disabled': {
-                                        bgcolor: '#e2e8f0',
+                                        bgcolor: isLoading ? '#a78bfa' : '#e2e8f0', 
                                         color: '#94a3b8',
-                                        pointerEvents: 'none' 
                                     }
                                 }}
                             >
-                                Sign In
+                                {isLoading ? (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <CircularProgress size={24} sx={{ color: 'white' }} />
+                                        <span>Connecting...</span>
+                                    </Box>
+                                ) : (
+                                    "Sign In"
+                                )}
                             </Button>
                         </Box>
                     </Tooltip>
