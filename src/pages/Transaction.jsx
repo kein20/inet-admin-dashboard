@@ -26,7 +26,7 @@ const TransactionPage = () => {
     }, []);
 
     const fetchData = async () => {
-        setLoading(true); 
+        setLoading(true);
         try {
             const [trxRes, custRes, pkgRes] = await Promise.all([
                 api.get('/transactions'),
@@ -56,7 +56,7 @@ const TransactionPage = () => {
             console.error("Gagal mengambil data:", err);
             setSnackbar({ open: true, message: 'Failed to load data', severity: 'error' });
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     };
 
@@ -123,67 +123,59 @@ const TransactionPage = () => {
                 <Typography variant="h5" color="text.primary">Transaction History</Typography>
             </Box>
 
-            <Paper sx={{ p: 2, mb: 3, display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+            <Paper sx={{
+                p: 2, mb: 3,
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                gap: 2,
+                alignItems: 'center'
+            }}>
                 <TextField
-                    label="Search Customer Name"
+                    label="Search by Name..."
                     variant="outlined"
                     size="small"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <Search fontSize="small" sx={{ color: 'text.secondary' }} />
-                            </InputAdornment>
-                        ),
+                        startAdornment: (<InputAdornment position="start"><Search fontSize="small" /></InputAdornment>),
                     }}
-                    sx={{ flexGrow: 1, minWidth: '200px' }}
+                    sx={{ width: { xs: '100%', md: 'auto' }, flexGrow: 1 }} 
                 />
 
-                <TextField
-                    label="Date"
-                    type="date"
-                    size="small"
-                    value={filterDate}
-                    onChange={(e) => setFilterDate(e.target.value)}
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ width: 140 }}
-                />
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', width: { xs: '100%', md: 'auto' } }}>
+                    <TextField
+                        label="Date"
+                        type="date"
+                        size="small"
+                        value={filterDate}
+                        onChange={(e) => setFilterDate(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        sx={{ flexGrow: 1 }}
+                    />
 
-                <FormControl size="small" sx={{ width: 160 }}>
-                    <InputLabel>Package Type</InputLabel>
-                    <Select
-                        value={filterPackage}
-                        label="Package Type"
-                        onChange={(e) => setFilterPackage(e.target.value)}
-                    >
-                        <MenuItem value="all">All Packages</MenuItem>
-                        {allPackages.map((pkg) => (
-                            <MenuItem key={pkg.id} value={pkg.name}>
-                                {pkg.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                    <FormControl size="small" sx={{ flexGrow: 1, minWidth: 140 }}>
+                        <InputLabel>Package</InputLabel>
+                        <Select value={filterPackage} label="Package" onChange={(e) => setFilterPackage(e.target.value)}>
+                            <MenuItem value="all">All</MenuItem>
+                            {allPackages.map((pkg) => (
+                                <MenuItem key={pkg.id} value={pkg.name}>{pkg.name}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
 
-                <FormControl size="small" sx={{ width: 160 }}>
-                    <InputLabel>Sort By</InputLabel>
-                    <Select
-                        value={sortOrder}
-                        label="Sort By"
-                        onChange={(e) => setSortOrder(e.target.value)}
-                    >
-                        <MenuItem value="newest">Newest Date</MenuItem>
-                        <MenuItem value="oldest">Oldest Date</MenuItem>
-                        <MenuItem value="nameAsc">Customer (A-Z)</MenuItem>
-                        <MenuItem value="nameDesc">Customer (Z-A)</MenuItem>
-                        <MenuItem value="highPrice">Highest Price</MenuItem>
-                        <MenuItem value="lowPrice">Lowest Price</MenuItem>
-                    </Select>
-                </FormControl>
+                    <FormControl size="small" sx={{ flexGrow: 1, minWidth: 140 }}>
+                        <InputLabel>Sort</InputLabel>
+                        <Select value={sortOrder} label="Sort" onChange={(e) => setSortOrder(e.target.value)}>
+                            <MenuItem value="newest">Newest</MenuItem>
+                            <MenuItem value="oldest">Oldest</MenuItem>
+                            <MenuItem value="highPrice">Highest Price</MenuItem>
+                            <MenuItem value="lowPrice">Lowest Price</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
 
                 {(search || filterDate || filterPackage !== 'all' || sortOrder !== 'newest') && (
-                    <Button size="small" color="error" onClick={handleReset}>
+                    <Button size="small" color="error" onClick={handleReset} sx={{ width: { xs: '100%', md: 'auto' } }}>
                         Reset
                     </Button>
                 )}

@@ -85,46 +85,42 @@ const CustomerPage = () => {
                 </Button>
             </Box>
 
-            <Paper sx={{ p: 2, mb: 3, display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+            <Paper sx={{
+                p: 2, mb: 3,
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                gap: 2,
+                alignItems: 'center'
+            }}>
                 <TextField
                     size="small"
                     placeholder="Search by Name, Email, Phone..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <Search fontSize="small" />
-                            </InputAdornment>
-                        ),
+                        startAdornment: (<InputAdornment position="start"><Search fontSize="small" /></InputAdornment>),
                     }}
-                    sx={{ flexGrow: 1 }}
+                    sx={{ width: { xs: '100%', md: 'auto' }, flexGrow: 1 }}
                 />
 
-                <FormControl size="small" sx={{ minWidth: 120 }}>
-                    <InputLabel>Status</InputLabel>
-                    <Select
-                        value={statusFilter}
-                        label="Status"
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                    >
-                        <MenuItem value="all">All Status</MenuItem>
-                        <MenuItem value="active">Active</MenuItem>
-                        <MenuItem value="inactive">Inactive</MenuItem>
-                    </Select>
-                </FormControl>
+                <Box sx={{ display: 'flex', gap: 2, width: { xs: '100%', md: 'auto' } }}>
+                    <FormControl size="small" fullWidth sx={{ minWidth: 120 }}>
+                        <InputLabel>Status</InputLabel>
+                        <Select value={statusFilter} label="Status" onChange={(e) => setStatusFilter(e.target.value)}>
+                            <MenuItem value="all">All</MenuItem>
+                            <MenuItem value="active">Active</MenuItem>
+                            <MenuItem value="inactive">Inactive</MenuItem>
+                        </Select>
+                    </FormControl>
 
-                <FormControl size="small" sx={{ minWidth: 120 }}>
-                    <InputLabel>Sort Name</InputLabel>
-                    <Select
-                        value={sortOrder}
-                        label="Sort Name"
-                        onChange={(e) => setSortOrder(e.target.value)}
-                    >
-                        <MenuItem value="asc">A - Z</MenuItem>
-                        <MenuItem value="desc">Z - A</MenuItem>
-                    </Select>
-                </FormControl>
+                    <FormControl size="small" fullWidth sx={{ minWidth: 120 }}>
+                        <InputLabel>Sort</InputLabel>
+                        <Select value={sortOrder} label="Sort" onChange={(e) => setSortOrder(e.target.value)}>
+                            <MenuItem value="asc">A-Z</MenuItem>
+                            <MenuItem value="desc">Z-A</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
             </Paper>
 
             <TableContainer component={Paper}>
