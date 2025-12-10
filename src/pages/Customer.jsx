@@ -3,7 +3,7 @@ import {
     Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent,
     DialogActions, TextField, Snackbar, Alert, Chip, InputAdornment,
-    MenuItem, Select, FormControl, InputLabel
+    MenuItem, Select, FormControl, InputLabel, CircularProgress
 } from '@mui/material';
 import { Add, Edit, Delete, ShoppingCart, Search } from '@mui/icons-material';
 import { useCustomers } from '../hooks/useCustomers';
@@ -24,13 +24,20 @@ const CustomerPage = () => {
     const [deleteId, setDeleteId] = useState(null);
     const [search, setSearch] = useState('');
     const [transactions, setTransactions] = useState([]);
-    const [sortOrder, setSortOrder] = useState('asc'); 
-    const [statusFilter, setStatusFilter] = useState('all'); 
+    const [sortOrder, setSortOrder] = useState('asc');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         api.get('/transactions')
-            .then(res => setTransactions(res.data))
-            .catch(err => console.error("Gagal ambil transaksi", err));
+            .then(res => {
+                setTransactions(res.data);
+            })
+            .catch(err => console.error("Gagal ambil transaksi", err))
+            .finally(() => {
+                setLoading(false);
+            });
     }, [customers, trxModalOpen]);
 
     const onBuyClick = (cust) => {
@@ -54,7 +61,7 @@ const CustomerPage = () => {
                 c.email.toLowerCase().includes(search.toLowerCase()) ||
                 c.phone.includes(search);
 
-            const status = getStatus(c.id); 
+            const status = getStatus(c.id);
             const matchStatus = statusFilter === 'all'
                 ? true
                 : status.toLowerCase() === statusFilter;
@@ -63,9 +70,9 @@ const CustomerPage = () => {
         })
         .sort((a, b) => {
             if (sortOrder === 'asc') {
-                return a.name.localeCompare(b.name); 
+                return a.name.localeCompare(b.name);
             } else {
-                return b.name.localeCompare(a.name); 
+                return b.name.localeCompare(a.name);
             }
         });
 
@@ -132,40 +139,50 @@ const CustomerPage = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {processedCustomers.map((row) => (
-                            <TableRow key={row.id}>
-                                <TableCell>
-                                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{row.name}</Typography>
-                                </TableCell>
-                                <TableCell>{row.email}</TableCell>
-                                <TableCell>{row.phone}</TableCell>
-                                <TableCell>
-                                    <Chip
-                                        label={getStatus(row.id)}
-                                        size="small"
-                                        color={getStatus(row.id) === 'Active' ? "success" : "default"}
-                                        variant={getStatus(row.id) === 'Active' ? "filled" : "outlined"}
-                                    />
-                                </TableCell>
-                                <TableCell align="right">
-                                    <Button size="small" startIcon={<ShoppingCart />} onClick={() => onBuyClick(row)} sx={{ mr: 1 }}>
-                                        Buy
-                                    </Button>
-                                    <Button size="small" startIcon={<Edit />} onClick={() => handleOpenEdit(row)} sx={{ mr: 1 }}>
-                                        Edit
-                                    </Button>
-                                    <Button size="small" startIcon={<Delete />} color="error" onClick={() => onDeleteClick(row.id)}>
-                                        Delete
-                                    </Button>
+                        {loading ? (
+                            <TableRow>
+                                <TableCell colSpan={5} align="center" sx={{ py: 5 }}>
+                                    <CircularProgress />
+                                    <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
+                                        Loading customer data...
+                                    </Typography>
                                 </TableCell>
                             </TableRow>
-                        ))}
-                        {processedCustomers.length === 0 && (
+                        ) : processedCustomers.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={5} align="center" sx={{ py: 3, color: 'text.secondary' }}>
                                     No customer found.
                                 </TableCell>
                             </TableRow>
+                        ) : (
+                            processedCustomers.map((row) => (
+                                <TableRow key={row.id}>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{row.name}</Typography>
+                                    </TableCell>
+                                    <TableCell>{row.email}</TableCell>
+                                    <TableCell>{row.phone}</TableCell>
+                                    <TableCell>
+                                        <Chip
+                                            label={getStatus(row.id)}
+                                            size="small"
+                                            color={getStatus(row.id) === 'Active' ? "success" : "default"}
+                                            variant={getStatus(row.id) === 'Active' ? "filled" : "outlined"}
+                                        />
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Button size="small" startIcon={<ShoppingCart />} onClick={() => onBuyClick(row)} sx={{ mr: 1 }}>
+                                            Buy
+                                        </Button>
+                                        <Button size="small" startIcon={<Edit />} onClick={() => handleOpenEdit(row)} sx={{ mr: 1 }}>
+                                            Edit
+                                        </Button>
+                                        <Button size="small" startIcon={<Delete />} color="error" onClick={() => onDeleteClick(row.id)}>
+                                            Delete
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
                         )}
                     </TableBody>
                 </Table>

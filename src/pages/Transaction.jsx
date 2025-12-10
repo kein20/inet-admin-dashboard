@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react';
 import {
     Box, Typography, Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Paper, Chip, IconButton, Snackbar, Alert, Tooltip,
-    TextField, MenuItem, Select, FormControl, InputLabel, Button, InputAdornment 
+    TextField, MenuItem, Select, FormControl, InputLabel, Button, InputAdornment,
+    CircularProgress
 } from '@mui/material';
-import { History, Delete, Search } from '@mui/icons-material'; 
+import { History, Delete, Search } from '@mui/icons-material';
 import api from '../api/Instance';
 import ConfirmDialog from '../components/Confirm';
 
 const TransactionPage = () => {
     const [trxs, setTrxs] = useState([]);
     const [allPackages, setAllPackages] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [filterDate, setFilterDate] = useState('');
     const [filterPackage, setFilterPackage] = useState('all');
@@ -24,6 +26,7 @@ const TransactionPage = () => {
     }, []);
 
     const fetchData = async () => {
+        setLoading(true); 
         try {
             const [trxRes, custRes, pkgRes] = await Promise.all([
                 api.get('/transactions'),
@@ -51,6 +54,9 @@ const TransactionPage = () => {
             setTrxs(mergedData);
         } catch (err) {
             console.error("Gagal mengambil data:", err);
+            setSnackbar({ open: true, message: 'Failed to load data', severity: 'error' });
+        } finally {
+            setLoading(false); 
         }
     };
 
@@ -144,7 +150,6 @@ const TransactionPage = () => {
                     sx={{ width: 140 }}
                 />
 
-                {/* DROPDOWN PACKAGE */}
                 <FormControl size="small" sx={{ width: 160 }}>
                     <InputLabel>Package Type</InputLabel>
                     <Select
@@ -196,31 +201,41 @@ const TransactionPage = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {processedTrxs.map((trx) => (
-                            <TableRow key={trx.id}>
-                                <TableCell>{formatDate(trx.date)}</TableCell>
-                                <TableCell sx={{ fontWeight: 600, color: 'primary.main' }}>{trx.customerName}</TableCell>
-                                <TableCell>
-                                    <Chip label={trx.packageName} size="small" color="secondary" variant="outlined" />
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>
-                                    Rp {parseInt(trx.total || 0).toLocaleString()}
-                                </TableCell>
-                                <TableCell align="right">
-                                    <Tooltip title="Delete History">
-                                        <IconButton color="error" size="small" onClick={() => onDeleteClick(trx.id)}>
-                                            <Delete />
-                                        </IconButton>
-                                    </Tooltip>
+                        {loading ? (
+                            <TableRow>
+                                <TableCell colSpan={5} align="center" sx={{ py: 10 }}>
+                                    <CircularProgress />
+                                    <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
+                                        Loading transaction history...
+                                    </Typography>
                                 </TableCell>
                             </TableRow>
-                        ))}
-                        {processedTrxs.length === 0 && (
+                        ) : processedTrxs.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={5} align="center" sx={{ py: 4, color: 'text.secondary' }}>
                                     No transactions found.
                                 </TableCell>
                             </TableRow>
+                        ) : (
+                            processedTrxs.map((trx) => (
+                                <TableRow key={trx.id}>
+                                    <TableCell>{formatDate(trx.date)}</TableCell>
+                                    <TableCell sx={{ fontWeight: 600, color: 'primary.main' }}>{trx.customerName}</TableCell>
+                                    <TableCell>
+                                        <Chip label={trx.packageName} size="small" color="secondary" variant="outlined" />
+                                    </TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>
+                                        Rp {parseInt(trx.total || 0).toLocaleString()}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Tooltip title="Delete History">
+                                            <IconButton color="error" size="small" onClick={() => onDeleteClick(trx.id)}>
+                                                <Delete />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </TableCell>
+                                </TableRow>
+                            ))
                         )}
                     </TableBody>
                 </Table>
