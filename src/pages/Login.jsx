@@ -86,7 +86,7 @@ const LoginPage = () => {
                     Hello!
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-                    Welcome back, Admin.
+                    Hello, Admin!.
                 </Typography>
 
                 {error && <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>{error}</Alert>}
